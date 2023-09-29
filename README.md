@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
-        uses: voyellefr/action_deploy@v1
+        uses: Voyellefr/github__action__wp_repository@v1
         with:
           plugin_slug: ${{ secrets.PLUGIN_SLUG }}
           api_repo: ${{ secrets.API_REPO }}

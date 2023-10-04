@@ -26,14 +26,36 @@ runs:
     - name: Clear directory
       shell: bash
       run: |
-        cd ${{ github.event.repository.name }}
+        cd ${{ inputs.plugin_slug }}
         rm -rf .git docker-compose.yml .gitignore
     - name: Set version and API URl
       shell: bash
       run: |
         version=$(echo ${{ github.event.release.tag_name }} | sed 's/v//')
-        sed -i "s/##VERSION##/$version/g" ${{ inputs.plugin_slug }}/${{ inputs.plugin_slug }}.php
-        sed -i 's|##API_URL##|${{ inputs.api_repo }}|g' ${{ inputs.plugin_slug }}/${{ inputs.plugin_slug }}.php
+        cd ${{ inputs.plugin_slug }}
+        sed -i "s/##VERSION##/$version/g" ${{ inputs.plugin_slug }}.php
+        sed -i 's|##API_URL##|${{ inputs.api_repo }}|g' ${{ inputs.plugin_slug }}.php
+    - name: Create missing files
+      shell: bash
+      run: |
+        cd ${{ inputs.plugin_slug }}
+        [ -e "composer.json" ] || composer init -q -n --name voyelle/${{ inputs.plugin_slug }} --type wordpress-plugin --require php:^8.0
+        [ -e "package.json" ] || npm init -y
+    - uses: "shivammathur/setup-php@v2"
+      with:
+        php-version: "latest"
+    - uses: "ramsey/composer-install@v2"
+      with:
+        composer-options: "--no-dev --no-progress --no-interaction"
+        working-directory: ${{ inputs.plugin_slug }}
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install dependencies
+      shell: bash
+      run: |
+        cd ${{ inputs.plugin_slug }}
+        npm install --omit=dev --no-progress
     - name: Create zip
       shell: bash
       run: |

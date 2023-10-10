@@ -32,6 +32,21 @@ jobs:
 
 Ainsi, toutes les releases publiées déclencheront le déploiement du plugin sur le repository Voyelle.
 
+## Versions des languages
+Vous pouvez changer la version de PHP et NodeJS utilisée.
+
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        ...
+        with:
+          php_version: 8
+          node_version: 18
+```
+
 ### Mise à jour de l'action
 https://github.com/actions/toolkit/blob/main/docs/action-versioning.md
 

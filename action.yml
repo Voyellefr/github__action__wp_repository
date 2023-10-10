@@ -16,6 +16,14 @@ inputs:
   api_user_password:
     description: 'The password of the user to authenticate with'
     required: true
+  php_version:
+    description: 'The PHP version to use'
+    required: false
+    default: 'latest'
+  node_version:
+    description: 'The Node version to use'
+    required: false
+    default: '18'
 runs:
   using: "composite"
   steps:
@@ -43,14 +51,14 @@ runs:
         [ -e "package.json" ] || npm init -y
     - uses: "shivammathur/setup-php@v2"
       with:
-        php-version: "latest"
+        php-version: ${{ inputs.php_version }}
     - uses: "ramsey/composer-install@v2"
       with:
         composer-options: "--no-dev --no-progress --no-interaction"
         working-directory: ${{ inputs.plugin_slug }}
     - uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: ${{ inputs.node_version }}
     - name: Install dependencies
       shell: bash
       run: |
